@@ -1,0 +1,13 @@
+Stack
+setup    CI/CD
+deploy   with docker on AWS
+frontend react + typescript + vite (study this)
+backend  rust + axum + tokio (study this)
+redis    graph database
+
+
+learn about rust macros, tokio, derive + modules
+learn about vite
+
+
+https://dev.to/werner/practical-rust-web-development-api-rest-29g1
