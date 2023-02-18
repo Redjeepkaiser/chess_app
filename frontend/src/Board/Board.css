@@ -1,0 +1,21 @@
+.border {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  background-color: grey;
+}
+
+.row {
+  display: flex;
+}
+
+.black-cell {
+  background-color: black;
+}
+  
+.white-cell {
+  background-color: white;
+}
+

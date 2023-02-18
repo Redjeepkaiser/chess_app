@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
-import { Board } from "Board";
 import { Person } from "./types";
 
+import Board from "./Board/Board.tsx"
 
 function App() {
   return (
     <div>
-      Title
+      <h1>
+        Title
+      </h1>
+      <Board></Board>
     </div>
   );
 }

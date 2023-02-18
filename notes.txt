@@ -1,13 +1,19 @@
 Stack
+stockfish
+
 setup    CI/CD
+https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions
+
 deploy   with docker on AWS
 frontend react + typescript + vite (study this)
 backend  rust + axum + tokio (study this)
 redis    graph database
 
+draggable
+https://stackoverflow.com/questions/20926551/recommended-way-of-making-react-component-div-draggable
 
 learn about rust macros, tokio, derive + modules
+https://tokio.rs/
+
 learn about vite
-
-
-https://dev.to/werner/practical-rust-web-development-api-rest-29g1
+https://vitejs.dev/guide/
