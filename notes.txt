@@ -1,12 +1,16 @@
 Stack
 stockfish
 
+
+
 setup    CI/CD
 https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions
 
 deploy   with docker on AWS
 frontend react + typescript + vite (study this)
 backend  rust + axum + tokio (study this)
+
+redux
 redis    graph database
 
 draggable

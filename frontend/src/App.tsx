@@ -6,10 +6,7 @@ import Board from "./Board/Board.tsx"
 function App() {
   return (
     <div>
-      <h1>
-        Title
-      </h1>
-      <Board></Board>
+      <Board />
     </div>
   );
 }
