@@ -40,6 +40,9 @@ const repr_to_react: { [key: string]: Function } = {
     'R': WhiteRook,
 }
 
+const starting_position: string = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
+const test_position: string = '4k3/8/8/8/8/8/5P2/RNBQKBNR w KQkq - 0 1'
+
 function renderSquare(
     x: number,
     y: number,
@@ -65,12 +68,12 @@ function renderSquare(
 
 export default function Board() {
     let [gameState, setGameState] = React.useState<ChessGame>(() => {
-        return ChessGame.from_fen('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1')
+        return ChessGame.from_fen(test_position)
     })
 
     let gameStateRef = React.useRef(gameState)
     gameStateRef.current = gameState
-    console.log("u", gameStateRef.current.curr_state.white_to_move)
+    // console.log("u", gameStateRef.current.curr_state.#white_to_move)
 
     let [moving, setMoving] = React.useState(false)
     let [selectedRow, setSelectedRow] = React.useState(0)
