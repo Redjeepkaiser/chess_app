@@ -66,6 +66,17 @@ const ROOK_DIRECTIONS = [
     ROOK_LEFT,
 ]
 
+const QUEEN_DIRECTIONS = [
+    BISHOP_NORTH_EAST,
+    BISHOP_NORTH_WEST,
+    BISHOP_SOUTH_EAST,
+    BISHOP_SOUTH_WEST,
+    ROOK_FORWARD,
+    ROOK_BACKWARD,
+    ROOK_RIGHT,
+    ROOK_LEFT,
+]
+
 const IS_EMPTY = (repr: number) => { return !repr }
 const IS_BLACK_PIECE = (repr: number) => { return 1 <= repr && repr <= 6 }
 const IS_WHITE_PIECE = (repr: number) => { return 7 <= repr }
@@ -364,7 +375,40 @@ export default class ChessState {
                 all_valid_moves.set(idx, moves)
                 return
             }
-   
+
+            if (this.grid[idx] == FEN_TO_INT_MAPPING['q']) {
+                QUEEN_DIRECTIONS.forEach((direction) => {
+                    for (let curr_idx = idx + direction; 0 <= curr_idx && curr_idx < 128 && curr_idx % 16 < 8; curr_idx += direction) {
+                        if (IS_EMPTY(this.grid[curr_idx])) {
+                            moves.push(curr_idx)
+                        } else if (IS_WHITE_PIECE(this.grid[curr_idx])) {
+                            moves.push(curr_idx)
+                            break
+                        } else {
+                            break
+                        }
+                    }
+                })
+                all_valid_moves.set(idx, moves)
+                return
+            }
+
+            if (this.grid[idx] == FEN_TO_INT_MAPPING['Q']) {
+                QUEEN_DIRECTIONS.forEach((direction) => {
+                    for (let curr_idx = idx + direction; 0 <= curr_idx && curr_idx < 128 && curr_idx % 16 < 8; curr_idx += direction) {
+                        if (IS_EMPTY(this.grid[curr_idx])) {
+                            moves.push(curr_idx)
+                        } else if (IS_BLACK_PIECE(this.grid[curr_idx])) {
+                            moves.push(curr_idx)
+                            break
+                        } else {
+                            break
+                        }
+                    }
+                })
+                all_valid_moves.set(idx, moves)
+                return
+            }
         })
 
         return all_valid_moves
