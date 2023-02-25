@@ -4,6 +4,7 @@ import { FEN_TO_INT_MAPPING, INT_TO_FEN_MAPPING } from './Fen';
 // add piece records for black and white do this in rust optimalisation, or here
 // bitmaps
 // add tests
+// Basic checks are all the same, except for pawns, BLACK/WHITE PIECE
 
 const X88_MAPPING: number[] = [
     112, 113, 114, 115, 116, 117, 118, 119,
@@ -76,6 +77,8 @@ const QUEEN_DIRECTIONS = [
     ROOK_RIGHT,
     ROOK_LEFT,
 ]
+
+const KING_DIRECTIONS = QUEEN_DIRECTIONS
 
 const IS_EMPTY = (repr: number) => { return !repr }
 const IS_BLACK_PIECE = (repr: number) => { return 1 <= repr && repr <= 6 }
@@ -409,6 +412,35 @@ export default class ChessState {
                 all_valid_moves.set(idx, moves)
                 return
             }
+
+            if (this.grid[idx] == FEN_TO_INT_MAPPING['k']) {
+                KING_DIRECTIONS.forEach((direction) => {
+                    let curr_idx = idx + direction
+                    
+                    if (IS_EMPTY(this.grid[curr_idx])) {
+                        moves.push(curr_idx)
+                    } else if (IS_WHITE_PIECE(this.grid[curr_idx])) {
+                        moves.push(curr_idx)
+                    }
+                })
+                all_valid_moves.set(idx, moves)
+                return
+            }
+
+            if (this.grid[idx] == FEN_TO_INT_MAPPING['K']) {
+                KING_DIRECTIONS.forEach((direction) => {
+                    let curr_idx = idx + direction
+                    
+                    if (IS_EMPTY(this.grid[curr_idx])) {
+                        moves.push(curr_idx)
+                    } else if (IS_BLACK_PIECE(this.grid[curr_idx])) {
+                        moves.push(curr_idx)
+                    }
+                })
+                all_valid_moves.set(idx, moves)
+                return
+            }
+
         })
 
         return all_valid_moves
