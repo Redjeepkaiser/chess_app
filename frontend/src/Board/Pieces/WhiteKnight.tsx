@@ -10,6 +10,9 @@ function WhiteKnight(props: PieceProps) {
         item: () => {
             return { 'x': props.x, 'y': props.y }
         },
+        canDrag: () => {
+            return props.canMove(props.x, props.y)
+        },
         collect: monitor => ({
             isDragging: !!monitor.isDragging(),
         }),

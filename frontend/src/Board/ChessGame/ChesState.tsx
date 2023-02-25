@@ -21,14 +21,10 @@ const SECOND_RANK = 1
 const SEVENTH_RANK = 6
 
 const FORWARD = 16
-const DIAGONAL_RIGHT = 17
-const DIAGONAL_LEFT = 15
-const RIGHT = 1
-const LEFT = -1
 
 const KNIGHT_NORTH_WEST = 31
 const KNIGHT_NORTH_EAST = 33
-const KNIGHT_EAST_NORTH = 18 
+const KNIGHT_EAST_NORTH = 18
 const KNIGHT_EAST_SOUTH = -18
 const KNIGHT_SOUTH_EAST = -31
 const KNIGHT_SOUTH_WEST = -33
@@ -38,8 +34,8 @@ const KNIGHT_MOVES = [
     KNIGHT_NORTH_WEST,
     KNIGHT_NORTH_EAST,
     KNIGHT_EAST_NORTH,
-    KNIGHT_EAST_SOUTH,   
-    KNIGHT_SOUTH_EAST,   
+    KNIGHT_EAST_SOUTH,
+    KNIGHT_SOUTH_EAST,
     KNIGHT_SOUTH_WEST,
     KNIGHT_WEST_NORTH,
     KNIGHT_WEST_SOUTH,
@@ -230,11 +226,26 @@ export default class ChessState {
         return this.valid_moves.get(from)?.includes(to) ?? false
     }
 
+    canMove(currX: number, currY: number): boolean {
+        if (IS_BLACK_PIECE(this.grid[mapToX88(currX, currY)]) && this.white_to_move) {
+            return false
+        }
+        else if (IS_WHITE_PIECE(this.grid[mapToX88(currX, currY)]) && !this.white_to_move) {
+            return false
+        }
+
+        return true
+    }
+
     playMove(currX: number, currY: number, targetX: number, targetY: number): ChessState {
         let newState = this.copy()
         let piece = newState.grid[mapToX88(currX, currY)]
         newState.grid[mapToX88(currX, currY)] = FEN_TO_INT_MAPPING['e']
         newState.grid[mapToX88(targetX, targetY)] = piece
+        console.log("before", newState.white_to_move)
+        newState.white_to_move = !this.white_to_move
+        console.log("after", newState.white_to_move)
+
         newState.valid_moves = newState.computeValidMoves()
         return newState
     }
@@ -249,10 +260,18 @@ export default class ChessState {
                 return
             }
 
+            if (IS_BLACK_PIECE(this.grid[idx]) && this.white_to_move) {
+                return
+            }
+
+            if (IS_WHITE_PIECE(this.grid[idx]) && !this.white_to_move) {
+                return
+            }
+
             if (this.grid[idx] == FEN_TO_INT_MAPPING['p']) {
                 if (IS_EMPTY(this.grid[idx - FORWARD])) {
                     moves.push(idx - FORWARD)
-                    
+
                     if (getRowX88(idx) == SEVENTH_RANK && IS_EMPTY(this.grid[idx - FORWARD - FORWARD])) {
                         moves.push(idx - FORWARD - FORWARD)
                     }
@@ -272,7 +291,7 @@ export default class ChessState {
             if (this.grid[idx] == FEN_TO_INT_MAPPING['P']) {
                 if (IS_EMPTY(this.grid[idx + FORWARD])) {
                     moves.push(idx + FORWARD)
-                    
+
                     if (getRowX88(idx) == SECOND_RANK && IS_EMPTY(this.grid[idx + FORWARD + FORWARD])) {
                         moves.push(idx + FORWARD + FORWARD)
                     }
@@ -299,7 +318,7 @@ export default class ChessState {
                 all_valid_moves.set(idx, moves)
                 return
             }
-            
+
             if (this.grid[idx] == FEN_TO_INT_MAPPING['N']) {
                 KNIGHT_MOVES.map(movement => idx - movement).forEach((move) => {
                     if (IS_EMPTY(this.grid[move]) || IS_BLACK_PIECE(this.grid[move])) {
@@ -416,7 +435,7 @@ export default class ChessState {
             if (this.grid[idx] == FEN_TO_INT_MAPPING['k']) {
                 KING_DIRECTIONS.forEach((direction) => {
                     let curr_idx = idx + direction
-                    
+
                     if (IS_EMPTY(this.grid[curr_idx])) {
                         moves.push(curr_idx)
                     } else if (IS_WHITE_PIECE(this.grid[curr_idx])) {
@@ -430,7 +449,7 @@ export default class ChessState {
             if (this.grid[idx] == FEN_TO_INT_MAPPING['K']) {
                 KING_DIRECTIONS.forEach((direction) => {
                     let curr_idx = idx + direction
-                    
+
                     if (IS_EMPTY(this.grid[curr_idx])) {
                         moves.push(curr_idx)
                     } else if (IS_BLACK_PIECE(this.grid[curr_idx])) {

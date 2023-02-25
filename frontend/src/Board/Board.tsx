@@ -48,6 +48,7 @@ function renderSquare(
     handleSquareClick: Function,
     doMove: Function,
     isValidMove: Function,
+    canMove: Function,
 ) {
     return (
         <div
@@ -56,7 +57,7 @@ function renderSquare(
             onClick={() => handleSquareClick(x, y)}
         >
             <BoardSquare x={x} y={y} makeMove={doMove} isValidMove={isValidMove}>
-                {Piece && <Piece x={x} y={y} />}
+                {Piece && <Piece x={x} y={y} canMove={canMove}/>}
             </BoardSquare>
         </div>
     )
@@ -64,13 +65,12 @@ function renderSquare(
 
 export default function Board() {
     let [gameState, setGameState] = React.useState<ChessGame>(() => {
-        console.log("called useState")
         return ChessGame.from_fen('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1')
     })
 
     let gameStateRef = React.useRef(gameState)
     gameStateRef.current = gameState
-    // console.log("u", gameStateRef.current.curr_state.toString(), gameStateRef.current.curr_state.valid_moves)
+    console.log("u", gameStateRef.current.curr_state.white_to_move)
 
     let [moving, setMoving] = React.useState(false)
     let [selectedRow, setSelectedRow] = React.useState(0)
@@ -92,12 +92,15 @@ export default function Board() {
         }
     }
 
+    function canMove(currX: number, currY: number): boolean {
+        return gameStateRef.current.canMove(currX, currY)
+    }
+
     function playMove(currX: number, currY: number, targetX: number, targetY: number) {
-        setGameState(gameState.playMove(currX, currY, targetX, targetY))
+        setGameState(gameStateRef.current.playMove(currX, currY, targetX, targetY))
     }
 
     function isValidMove(currX: number, currY: number, targetX: number, targetY: number) {
-        // console.log("is valid u", gameStateRef.current.curr_state.toString())
         return gameStateRef.current.isValidMove(currX, currY, targetX, targetY)
     }
 
@@ -108,7 +111,7 @@ export default function Board() {
             let Piece = repr_to_react[representation]
 
             squares.push(renderSquare(
-                x, y, square_size, Piece, handleSquareClick, playMove, isValidMove
+                x, y, square_size, Piece, handleSquareClick, playMove, isValidMove, canMove
             ))
         }
     }

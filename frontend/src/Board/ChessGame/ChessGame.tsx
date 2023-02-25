@@ -1,5 +1,8 @@
 import ChessState from "./ChesState"
 
+// TODO:
+// Add move and coords types
+
 export default class ChessGame {
     curr_state: ChessState
 
@@ -9,6 +12,10 @@ export default class ChessGame {
 
     static from_fen(fen: string): ChessGame {
         return new ChessGame(ChessState.from_fen(fen))
+    }
+
+    canMove(currX: number, currY: number): boolean {
+        return this.curr_state.canMove(currX, currY)
     }
 
     playMove(currX: number, currY: number, targetX: number, targetY: number): ChessGame {
