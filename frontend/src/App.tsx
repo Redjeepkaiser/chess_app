@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import { Person } from "./types";
 
-import Board from "./Board/Board.tsx"
+import Board from "./Board/Board"
 
 function App() {
   return (

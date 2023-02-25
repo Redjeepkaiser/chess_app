@@ -63,11 +63,14 @@ function renderSquare(
 }
 
 export default function Board() {
-    let [gameState, setGameState] = React.useState(ChessGame.from_fen(
-        'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
-    ))
+    let [gameState, setGameState] = React.useState<ChessGame>(() => {
+        console.log("called useState")
+        return ChessGame.from_fen('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1')
+    })
+
     let gameStateRef = React.useRef(gameState)
     gameStateRef.current = gameState
+    // console.log("u", gameStateRef.current.curr_state.toString(), gameStateRef.current.curr_state.valid_moves)
 
     let [moving, setMoving] = React.useState(false)
     let [selectedRow, setSelectedRow] = React.useState(0)
@@ -94,6 +97,7 @@ export default function Board() {
     }
 
     function isValidMove(currX: number, currY: number, targetX: number, targetY: number) {
+        // console.log("is valid u", gameStateRef.current.curr_state.toString())
         return gameStateRef.current.isValidMove(currX, currY, targetX, targetY)
     }
 
