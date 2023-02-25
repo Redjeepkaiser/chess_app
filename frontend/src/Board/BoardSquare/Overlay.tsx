@@ -1,4 +1,8 @@
-export default function Overlay({ color }) {
+type Props = {
+    color: string,
+}
+
+export default function Overlay(props: Props) {
   return (
     <div
       style={{
@@ -9,7 +13,7 @@ export default function Overlay({ color }) {
         width: '100%',
         zIndex: 1,
         opacity: 0.5,
-        backgroundColor: color,
+        backgroundColor: props.color,
       }}
     />
   )

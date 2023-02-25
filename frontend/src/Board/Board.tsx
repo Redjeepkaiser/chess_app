@@ -9,113 +9,118 @@ import React from 'react'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 
-import BoardSquare from "./BoardSquare/BoardSquare.tsx"
-import { initGameState, copyGameState, makeMove, validateMove } from "./GameState/GameState.tsx"
+import BoardSquare from './BoardSquare/BoardSquare'
+import ChessGame from './ChessGame/ChessGame'
 
-import BlackBishop from "./Pieces/BlackBishop.tsx"
-import BlackKing from "./Pieces/BlackKing.tsx"
-import BlackKnight from "./Pieces/BlackNight.tsx"
-import BlackPawn from "./Pieces/BlackPawn.tsx"
-import BlackQueen from "./Pieces/BlackQueen.tsx"
-import BlackRook from "./Pieces/BlackRook.tsx"
-import WhiteBishop from "./Pieces/WhiteBishop.tsx"
-import WhiteKing from "./Pieces/WhiteKing.tsx"
-import WhiteKnight from "./Pieces/WhiteKnight.tsx"
-import WhitePawn from "./Pieces/WhitePawn.tsx"
-import WhiteQueen from "./Pieces/WhiteQueen.tsx"
-import WhiteRook from "./Pieces/WhiteRook.tsx"
+import BlackBishop from './Pieces/BlackBishop'
+import BlackKing from './Pieces/BlackKing'
+import BlackKnight from './Pieces/BlackNight'
+import BlackPawn from './Pieces/BlackPawn'
+import BlackQueen from './Pieces/BlackQueen'
+import BlackRook from './Pieces/BlackRook'
+import WhiteBishop from './Pieces/WhiteBishop'
+import WhiteKing from './Pieces/WhiteKing'
+import WhiteKnight from './Pieces/WhiteKnight'
+import WhitePawn from './Pieces/WhitePawn'
+import WhiteQueen from './Pieces/WhiteQueen'
+import WhiteRook from './Pieces/WhiteRook'
 
-const repr_to_react = {
-  "b": BlackBishop,
-  "k": BlackKing,
-  "n": BlackKnight,
-  "p": BlackPawn,
-  "q": BlackQueen,
-  "r": BlackRook,
-  "B": WhiteBishop,
-  "K": WhiteKing,
-  "N": WhiteKnight,
-  "P": WhitePawn,
-  "Q": WhiteQueen,
-  "R": WhiteRook,
+const repr_to_react: { [key: string]: Function } = {
+    'b': BlackBishop,
+    'k': BlackKing,
+    'n': BlackKnight,
+    'p': BlackPawn,
+    'q': BlackQueen,
+    'r': BlackRook,
+    'B': WhiteBishop,
+    'K': WhiteKing,
+    'N': WhiteKnight,
+    'P': WhitePawn,
+    'Q': WhiteQueen,
+    'R': WhiteRook,
 }
 
-const start_position = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-
-function renderSquare(row, col, size, Piece, handleSquareClick, doMove, isValidMove) {
-  const light = (row + col) % 2 === 0
-
-  return (
-    <div
-      key={row * 8 + col}
-      style={{ width: size, height: size }}
-      onClick={() => handleSquareClick(row, col)}
-    >
-      <BoardSquare row={row} col={col} makeMove={doMove} isValidMove={isValidMove}>
-        {Piece && <Piece row={row} col={col}/>}
-      </BoardSquare>
-    </div>
-  )
+function renderSquare(
+    x: number,
+    y: number,
+    size: number,
+    Piece: Function,
+    handleSquareClick: Function,
+    doMove: Function,
+    isValidMove: Function,
+) {
+    return (
+        <div
+            key={y * 8 + x}
+            style={{ width: size, height: size }}
+            onClick={() => handleSquareClick(x, y)}
+        >
+            <BoardSquare x={x} y={y} makeMove={doMove} isValidMove={isValidMove}>
+                {Piece && <Piece x={x} y={y} />}
+            </BoardSquare>
+        </div>
+    )
 }
 
-export default function Board({ knightPosition }) {
-  let [gameState, setGameState] = React.useState(initGameState(start_position));
-  const gameStateRef = React.useRef();
-  gameStateRef.current = gameState;
-  console.log("current game state", gameStateRef.current)
+export default function Board() {
+    let [gameState, setGameState] = React.useState(ChessGame.from_fen(
+        'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
+    ))
+    let gameStateRef = React.useRef(gameState)
+    gameStateRef.current = gameState
 
-  let [moving, setMoving] = React.useState(false)
-  let [selectedRow, setSelectedRow] = React.useState(0)
-  let [selectedCol, setSelectedCol] = React.useState(0)
+    let [moving, setMoving] = React.useState(false)
+    let [selectedRow, setSelectedRow] = React.useState(0)
+    let [selectedCol, setSelectedCol] = React.useState(0)
 
-  const square_size = 100
-  const board_size = 8 * 100
+    const square_size = 100
+    const board_size = 8 * 100
 
-  function handleSquareClick(row, col) {
-    if (!moving) {
-      setMoving(true)
-      setSelectedRow(row)
-      setSelectedCol(col)
-      //highlight moves
-    } else {
-      isValidMove(selectedRow, selectedCol, row, col)
-      doMove(selectedRow, selectedCol, row, col)
-      setMoving(false)
+    function handleSquareClick(x: number, y: number) {
+        if (!moving) {
+            setMoving(true)
+            setSelectedRow(y)
+            setSelectedCol(x)
+            //highlight moves
+        } else {
+            isValidMove(selectedRow, selectedCol, x, y)
+            playMove(selectedRow, selectedCol, x, y)
+            setMoving(false)
+        }
     }
-  }
 
-  function doMove(currRow, currCol, targetRow, targetCol) {
-    setGameState(makeMove(gameStateRef.current, currRow, currCol, targetRow, targetCol))
-  }
-
-  function isValidMove(currRow, currCol, targetRow, targetCol) {
-    return validateMove(gameStateRef.current, currRow, currCol, targetRow, targetCol)
-  }
-
-  const squares = []
-  for (let row = 0; row < 8; row++) {
-    for (let col = 0; col < 8; col++) {
-      let representation = gameStateRef.current.grid[row][col]
-      let Piece = repr_to_react[representation]
-  
-      squares.push(renderSquare(
-        row, col, square_size, Piece, handleSquareClick, doMove, isValidMove
-      ))
+    function playMove(currX: number, currY: number, targetX: number, targetY: number) {
+        setGameState(gameState.playMove(currX, currY, targetX, targetY))
     }
-  }
 
-  return (
-    <DndProvider backend={HTML5Backend}>
-      <div
-        style={{
-          width: board_size,
-          height: board_size,
-          display: 'flex',
-          flexWrap: 'wrap'
-        }}
-      >
-        {squares}
-      </div>
-    </DndProvider>
-  )
+    function isValidMove(currX: number, currY: number, targetX: number, targetY: number) {
+        return gameStateRef.current.isValidMove(currX, currY, targetX, targetY)
+    }
+
+    const squares = []
+    for (let y = 0; y < 8; y++) {
+        for (let x = 0; x < 8; x++) {
+            let representation = gameState.getSquare(x, y)
+            let Piece = repr_to_react[representation]
+
+            squares.push(renderSquare(
+                x, y, square_size, Piece, handleSquareClick, playMove, isValidMove
+            ))
+        }
+    }
+
+    return (
+        <DndProvider backend={HTML5Backend}>
+            <div
+                style={{
+                    width: board_size,
+                    height: board_size,
+                    display: 'flex',
+                    flexWrap: 'wrap'
+                }}
+            >
+                {squares}
+            </div>
+        </DndProvider>
+    )
 }

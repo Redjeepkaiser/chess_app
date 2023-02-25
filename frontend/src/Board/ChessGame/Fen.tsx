@@ -1,0 +1,31 @@
+export const FEN_TO_INT_MAPPING: { [key: string]: number } = {
+    "e": 0,
+    "p": 1,
+    "n": 2,
+    "b": 3,
+    "r": 4,
+    "q": 5,
+    "k": 6,
+    "P": 7,
+    "N": 8,
+    "B": 9,
+    "R": 10,
+    "Q": 11,
+    "K": 12,
+}
+
+export const INT_TO_FEN_MAPPING: { [key: number]: string } = {
+    0: "e",
+    1: "p",
+    2: "n",
+    3: "b",
+    4: "r",
+    5: "q",
+    6: "k",
+    7: "P",
+    8: "N",
+    9: "B",
+    10: "R",
+    11: "Q",
+    12: "K",
+}

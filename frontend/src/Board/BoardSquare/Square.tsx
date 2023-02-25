@@ -2,8 +2,13 @@ import React from 'react'
 
 import './Square.css'
 
-export default function Square({ light, children }) {
-  let className = (light ? "light-square" : "dark-square")
+type Props = {
+    light: boolean,
+    children?: React.ReactNode,
+}
+
+export default function Square(props: Props) {
+  let className = (props.light ? "light-square" : "dark-square")
 
   return (
     <div
@@ -13,7 +18,7 @@ export default function Square({ light, children }) {
         height: '100%'
       }}
     >
-      {children}
+      {props.children}
     </div>
   )
 }
